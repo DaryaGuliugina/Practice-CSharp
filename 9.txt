@@ -1,0 +1,67 @@
+using System;
+using System.Linq;
+using System.Net;
+using System.Text.RegularExpressions;
+namespace HW1
+{
+    /*
+     * Задание 1
+     * Создайте класс «Веб-сайт». Необходимо хранить в полях класса: название сайта, путь к сайту, 
+     * описание сайта, ip адрес сайта. Реализуйте методы класса для ввода данных, вывода данных, 
+     * реализуйте доступ к отдельным полям через методы класса. 
+     */
+    class Web
+    {
+        private string path;
+        private string ipAddress;
+        public string Name { get; set; }
+        public string Description { get; set; }
+        public string IpAddress
+        {
+            get { return ipAddress; }
+            set 
+            { 
+                ipAddress = IPAddress.TryParse(value, out IPAddress address) ? value : "нет данных";
+            }
+        }
+        public string Path
+        {
+            get { return path; }
+            set 
+            {
+                path = Regex.IsMatch(value, @"(http|https)://([\w-]+\.)+[\w-]+(/[\w- ./?%&=]*)?") ? value : "нет данных";
+            }
+        }
+
+        public void Print()
+        {
+            Console.WriteLine($"Название: {Name}");
+            Console.WriteLine($"Путь: {path}");
+            Console.WriteLine($"Описание: {Description}");
+            Console.WriteLine($"Ip адрес: {ipAddress}");
+        }
+
+        public void Init()
+        {
+            Console.Write("Введите название сайта: ");
+            Name = Console.ReadLine();
+            Console.Write("Введите путь к сайту: ");
+            Path = Console.ReadLine();
+            Console.Write("Введите описание сайта: ");
+            Description = Console.ReadLine();
+            Console.Write("Введите ip адрес сайта: ");
+            IpAddress = Console.ReadLine();
+        }
+
+    }
+    class Program
+    {     
+        static void Main(string[] args)
+        {
+            Web web = new Web();
+            web.Init();
+            Console.Clear();
+            web.Print();
+        }
+    }
+}

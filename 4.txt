@@ -1,0 +1,38 @@
+using System;
+using System.Linq;
+
+namespace HW1
+{
+    class Program
+    {
+        /*
+         * Задание 1
+         * Пользователь вводит с клавиатуры три числа. Необходимо подсчитать сколько раз 
+         * последовательность из этих трёх чисел встречается в массиве.
+         * Например: пользователь ввёл: 7 6 5; массив: 7 6 5 3 4 7 6 5 8 7 6 5;
+         * количество повторений последовательности: 3.
+         */
+        static void Main(string[] args)
+        {
+            int[] arr = new int[] { 7, 6, 5, 3, 4, 7, 6, 5, 8, 7, 6, 5 };
+            string input = "", substring = "";
+            for (int i = 0; i < arr.Length; i++)
+            {
+                input += arr[i].ToString();
+            }
+            for (int i = 0; i < 3; i++)
+            {
+                Console.Write($"Введите {i + 1} число: ");
+                substring += Console.ReadLine();
+            }
+            int counter = 0;
+            int index = 0;
+            while ((index = input.IndexOf(substring, index)) != -1)
+            {
+                counter++;
+                index += substring.Length;
+            }
+            Console.WriteLine("Количество повторений последовательности: "+ counter);
+        }
+    }
+}

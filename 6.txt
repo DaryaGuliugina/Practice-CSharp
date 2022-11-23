@@ -1,0 +1,83 @@
+using System;
+using System.Linq;
+
+namespace HW1
+{
+    class Program
+    {
+        /*
+         * 1. Написать программу, которая предлагает пользователю ввести число и считает, 
+         * сколько раз это число встречается в массиве.
+         */
+        static void OccurrenceElementInArray(int[] arrayNumbers)
+        {
+            Console.Write("Введите число: ");
+            int userNumber = int.Parse(Console.ReadLine());
+            int count = arrayNumbers.Where(x => x.Equals(userNumber)).Count();
+            Console.WriteLine($"Число вхождений элемента {userNumber} в массив: {count}");
+        }
+        static void InitializingArray(ref int[,] arr)
+        {
+            Random random = new Random();
+            for (int i = 0; i < arr.GetLength(0); i++)
+            {
+                for (int j = 0; j < arr.GetLength(1); j++)
+                {
+                    arr[i, j] = random.Next(20);
+                }
+            }
+        }
+        static void PrintArray(int[,] arr)
+        {
+            for (int i = 0; i < arr.GetLength(0); i++)
+            {
+                for (int j = 0; j < arr.GetLength(1); j++)
+                {
+                    Console.Write(arr[i, j] + "\t");
+                }
+                Console.WriteLine();
+            }
+        }
+        /*
+         * 2. В двумерном массиве порядка M на N поменяйте местами заданные столбцы.
+         */
+        static void swapColumns(ref int[,] arr, int firstColumn, int secondColumn)
+        {
+            int temp;
+            if (firstColumn > secondColumn)
+            {
+                int x = firstColumn;
+                firstColumn = secondColumn;
+                secondColumn = x;
+            }
+            for (int i = 0; i < arr.GetLength(0); i++)
+            {
+                temp = arr[i, firstColumn];
+                arr[i, firstColumn] = arr[i, secondColumn];
+                arr[i, secondColumn] = temp;
+            }
+        }
+        static void Main(string[] args)
+        {
+            int[] array1 = new int[] { 1, 2, 4, -5, 7, 6, 1, 4, 6, -5, 9, 1 };
+            Console.WriteLine(string.Join(" ", array1));
+            OccurrenceElementInArray(array1);
+
+            int M = 5, N = 4;
+            int[,] array2 = new int[M,N];
+
+            InitializingArray(ref array2);
+            PrintArray(array2);
+
+            Console.Write("Введите первый столбец: ");
+            int firstColumn = int.Parse(Console.ReadLine()) - 1;
+            Console.Write("Введите второй столбец: ");
+            int secondColumn = int.Parse(Console.ReadLine()) - 1;
+
+            swapColumns(ref array2, firstColumn, secondColumn);
+
+            Console.WriteLine("Измененный массив: ");
+            PrintArray(array2);
+        }
+    }
+}

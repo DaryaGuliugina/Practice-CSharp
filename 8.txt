@@ -1,0 +1,177 @@
+using System;
+using System.Linq;
+
+namespace HW1
+{
+    //2
+    static class Matrix
+    {
+        public static void InitMatrix(ref int[,] matrix)
+        {
+            Random random = new Random();
+            for (int i = 0; i < matrix.GetLength(0); i++)
+            {
+                for (int j = 0; j < matrix.GetLength(1); j++)
+                {
+                    matrix[i, j] = random.Next(20);
+                }
+            }
+        }
+        public static void PrintMatrix<T>(T[,] matrix)
+        {
+            for (int i = 0; i < matrix.GetLength(0); i++)
+            {
+                for (int j = 0; j < matrix.GetLength(1); j++)
+                {
+                    Console.Write(matrix[i, j] + "\t");
+                }
+                Console.WriteLine();
+            }
+            Console.WriteLine();
+        }
+        public static int[,] MultNumber(int[,] matrix, int number)
+        {
+            int[,] newMatrix = new int[matrix.GetLength(0), matrix.GetLength(1)];
+            for (int i = 0; i < matrix.GetLength(0); i++)
+            {
+                for (int j = 0; j < matrix.GetLength(1); j++)
+                {
+                    newMatrix[i, j] = matrix[i, j] * number;
+                }
+            }
+            return newMatrix;
+        }
+        public static int[,] MatrixAddition(int[,] matrix1, int[,] matrix2)
+        {
+            int[,] newMatrix = new int[matrix1.GetLength(0), matrix1.GetLength(1)];
+            for (int i = 0; i < matrix1.GetLength(0); i++)
+            {
+                for (int j = 0; j < matrix1.GetLength(1); j++)
+                {
+                    newMatrix[i, j] = matrix1[i, j] + matrix2[i, j];
+                }
+            }
+            return newMatrix;
+        }
+        public static int[,] MultMatrix(int[,] matrix1, int[,] matrix2)
+        {
+            int[,] newMatrix = new int[matrix1.GetLength(0), matrix2.GetLength(1)];
+            for (int i = 0; i < matrix1.GetLength(0); i++)
+            {
+                for (int j = 0; j < matrix2.GetLength(1); j++)
+                {
+                    for (int k = 0; k < matrix2.GetLength(0); k++)
+                    {
+                        newMatrix[i, j] += matrix1[i, k] * matrix2[k, j];
+                    }
+                }
+            }
+            return newMatrix;
+        }
+    }
+    class Program
+    {
+        //1
+        static string alphabet = " abcdefghijklmnopqrstuvwxyz";
+        static void CaesarShift(int key, ref string word, bool encode)
+        {
+            string res = "";
+            for (int i = 0; i < word.Length; i++)
+            {
+                int k = alphabet.IndexOf(word[i]);
+                k += (encode) ? key : -key;
+                if (k >= alphabet.Length) k -= alphabet.Length;
+                else if (k < 0) k += alphabet.Length;
+                res += alphabet[k];
+            }
+            word = res;
+        }
+        //3
+        static int Parser(string str)
+        {
+            if (str[0] == '-')
+            {
+                str = str.Insert(0, "0");
+            }
+            int[] array = str.Split('+', '-').Select(int.Parse).ToArray();
+            string oper = "";
+            for (int i = 0; i < str.Length; i++)
+            {
+                if (str[i] == '+' || str[i] == '-')
+                {
+                    oper += str[i];
+                }
+            }
+            for (int i = 0; i < oper.Length; i++)
+            {
+                if (oper[i] == '-')
+                {
+                    array[i + 1] = -array[i + 1];
+                }
+            }
+            return array.Sum();
+        }
+        static void Main(string[] args)
+        {
+            /*
+             * Задание 1
+             * Пользователь вводит строку с клавиатуры. Необходимо зашифровать данную строку используя шифр Цезаря.
+             * Кроме механизма шифровки, реализуйте механизм расшифрования.
+             */
+            int key = 5;
+            Console.WriteLine("Введите строку для шифрования: ");
+            string word = Console.ReadLine();
+            CaesarShift(key, ref word, true);
+            Console.WriteLine($"Зашифрованная строка: {word}");
+            CaesarShift(key, ref word, false);
+            Console.WriteLine($"Дешифрованная строка: {word}");
+            /*
+             * Задание 2
+             * Создайте приложение, которое производит операции над матрицами:
+             * ■ Умножение матрицы на число;
+             * ■ Сложение матриц;
+             * ■ Произведение матриц.
+             */
+            int[,] matrix1 = new int[5, 5];
+            Console.Write("Введите число, на которое нужно умножить матрицу: ");
+            int number = int.Parse(Console.ReadLine());
+            Matrix.InitMatrix(ref matrix1);
+            Matrix.PrintMatrix(matrix1);
+            int[,] matrix2 = Matrix.MultNumber(matrix1, number);
+            Console.WriteLine($"Умножение матрицы на число {number}: ");
+            Matrix.PrintMatrix(matrix2);
+
+            int[,] matrix3 = Matrix.MatrixAddition(matrix1, matrix2);
+            Console.WriteLine("Сложение матриц: ");
+            Matrix.PrintMatrix(matrix3);
+
+            int[,] A = new int[2, 3];
+            int[,] B = new int[3, 2];
+            Matrix.InitMatrix(ref A);
+            Matrix.InitMatrix(ref B);
+            Console.WriteLine("Матрица A: ");
+            Matrix.PrintMatrix(A);
+            Console.WriteLine("Матрица B: ");
+            Matrix.PrintMatrix(B);
+            if (A.GetLength(0) == B.GetLength(1))
+            {
+                int[,] C = Matrix.MultMatrix(A, B);
+                Console.WriteLine("Матрица C (AxB): ");
+                Matrix.PrintMatrix(C);
+            }
+            else
+            {
+                Console.WriteLine("Неккоректные данные");
+            }
+
+            /*
+             * Задание 3
+             * Пользователь с клавиатуры вводит в строку арифметическое выражение. Приложение должно посчитать
+             * его результат. Необходимо поддерживать только две операции: + и –.
+             */
+            Console.WriteLine("Введите арифметическре выражение: ");
+            string str = Console.ReadLine();
+            Console.WriteLine($"{str}={Parser(str)}");
+        }
+    }
+}

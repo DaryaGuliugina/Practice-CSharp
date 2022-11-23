@@ -1,0 +1,103 @@
+using System;
+
+namespace Lesson
+{
+    class Program
+    {
+        /*
+         * Задание 2
+         * Создайте класс «Заграничный паспорт». 
+         * Вам необходимо хранить информацию о номере паспорта, ФИО владельца, дате выдачи и т.д. 
+         * Предусмотреть механизмы для инициализации полей класса. 
+         * Если значение для инициализации неверное, генерируйте исключение.
+         */
+        class ForeignPassport
+        {
+            private int passportNumber;
+            private string surName;
+            private string name;
+            private string placeOfBirthday;
+            private string nationality;
+            private string strDateOfBirth;
+            public void StringExeption(ref string word)
+            {
+                try
+                {
+                    for (int i = 0; i < word.Length; i++)
+                    {
+                        if (char.IsDigit(word[i]))
+                        {
+                            word = "";
+                            throw new Exception("Неверный ввод данных.");
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
+            }
+
+            public void InitPassport()
+            {
+                try
+                {
+                    Console.Write("Введите номер паспорта: ");
+                    string temp = Console.ReadLine();
+                    if (temp.Length != 9)
+                    {
+                        throw new Exception("Неверный ввод данных.");
+                    }
+                    passportNumber = int.Parse(temp);
+                }
+                catch (Exception ex)
+                {
+                    passportNumber = 0;
+                    Console.WriteLine(ex.Message);
+                }
+                Console.Write("Введите фамилию: ");
+                surName = Console.ReadLine();
+                StringExeption(ref surName);
+                Console.Write("Введите имя: ");
+                name = Console.ReadLine();
+                StringExeption(ref name);
+                Console.Write("Введите гражданство: ");
+                nationality = Console.ReadLine();
+                StringExeption(ref nationality);
+                Console.Write("Введите место рождения: ");
+                placeOfBirthday = Console.ReadLine();
+                StringExeption(ref placeOfBirthday);
+                Console.Write("Введите дату рождения: ");
+                strDateOfBirth = Console.ReadLine();
+                try
+                {
+                    DateTime dateOfBirth = DateTime.Parse(strDateOfBirth);
+                }
+                catch (Exception)
+                {
+                    strDateOfBirth = "00.00.0000";
+                    Console.WriteLine("Неверный формат данных.");
+                }
+
+            }
+            public void Show()
+            {
+                Console.WriteLine($"Номер паспорта: {passportNumber}");
+                Console.WriteLine($"Фамилия: {surName}");
+                Console.WriteLine($"Имя: {name}");
+                Console.WriteLine($"Гражданство: {nationality}");
+                Console.WriteLine($"Место рождения: {placeOfBirthday}");
+                Console.WriteLine($"Дата рождения: {strDateOfBirth}");
+            }
+
+        }
+
+        static void Main(string[] args)
+        {
+            ForeignPassport foreignPassport = new ForeignPassport();
+            foreignPassport.InitPassport();
+            Console.Clear();
+            foreignPassport.Show();
+        }
+    }
+}

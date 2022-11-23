@@ -1,0 +1,38 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text.RegularExpressions;
+
+namespace HW
+{
+    /*
+     * Задание 1. Программа «Статистика»
+     * Подсчитать, сколько раз каждое слово встречается в заданном тексте. 
+     * Результат записать в коллекцию Dictionary<TKey, TValue>. Текст использовать из приложения 1.
+     * Вывести статистику по тексту в виде таблицы 
+     */
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            Dictionary<string, int> words = new Dictionary<string, int>();
+            string text = "Вот дом, Который построил Джек. А это пшеница, Которая в темном чулане хранится В доме, " +
+                "Который построил Джек. А это веселая птица-синица, Которая часто ворует пшеницу, " +
+                "Которая в темном чулане хранится В доме, Который построил Джек.";
+            text = Regex.Replace(text, "[,.]", String.Empty);
+            string[] arrayOfWords = text.Split(' ');
+            
+            foreach (var item in arrayOfWords.GroupBy(x => x))
+            {
+                words.Add(item.Key, item.Count());
+            }
+            Console.WriteLine("{0,24}  {1,23}", "Слово:", "Кол-во:");
+            int index = 0;
+            foreach (var item in words)
+            {
+                Console.WriteLine("{0,3} {1,19} {2,22}", $"{++index}.", $"{item.Key}", $"{item.Value}");
+            }
+            Console.WriteLine($"Всего слов: {arrayOfWords.Length} из них уникальных: {index}");
+        }
+    }
+}

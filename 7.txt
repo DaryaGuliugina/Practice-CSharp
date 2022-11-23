@@ -1,0 +1,117 @@
+using System;
+using System.Linq;
+
+namespace HW1
+{
+
+    static class MyArray
+    {
+        public static void InitArray(ref int[] array)
+        {
+            for (int i = 0; i < array.Length; i++)
+            {
+                Console.Write($"Введите {i + 1} элемент массива: ");
+                array[i] = int.Parse(Console.ReadLine());
+            }
+        }
+        public static void InitArray(ref double[,] array)
+        {
+            Random random = new Random();
+            for (int i = 0; i < array.GetLength(0); i++)
+            {
+                for (int j = 0; j < array.GetLength(1); j++)
+                {
+                    array[i, j] = Math.Round(random.NextDouble(), 2) + random.Next(10);
+                }
+            }
+        }
+        public static void InitArray(ref int[,] array)
+        {
+            Random random = new Random();
+            for (int i = 0; i < array.GetLength(0); i++)
+            {
+                for (int j = 0; j < array.GetLength(1); j++)
+                {
+                    array[i, j] = random.Next(-100, 101);
+                }
+            }
+        }
+        public static void PrintArray(int[] array)
+        {
+            Console.Write(string.Join(" ", array));
+            Console.WriteLine();
+        }
+        public static void PrintArray<T>(T[,] array)
+        {
+            for (int i = 0; i < array.GetLength(0); i++)
+            {
+                for (int j = 0; j < array.GetLength(1); j++)
+                {
+                    Console.Write(array[i, j] + "\t");
+                }
+                Console.WriteLine();
+            }
+        }
+        public static void Task1(int[] A, double[,] B)
+        {
+            Console.WriteLine($"\nМаксимальный элемент массива A: {A.Max()}");
+            Console.WriteLine($"Максимальный элемент массива B: {B.Cast<double>().Max()}\n");
+            Console.WriteLine($"Минимальный элемент массива A: {A.Min()}");
+            Console.WriteLine($"Минимальный элемент массива B: {B.Cast<double>().Min()}\n");
+            Console.WriteLine($"Сумма элементов массива A: {A.Sum()}");
+            Console.WriteLine($"Сумма элементов массива B: {B.Cast<double>().Sum()}\n");
+            Console.WriteLine($"Произведение элементов массива A: {A.Aggregate((x, y) => x * y)}");
+            Console.WriteLine($"Произведение элементов массива B: {Math.Round(B.Cast<double>().Aggregate((x, y) => x * y), 2)}\n");
+            Console.WriteLine($"Сумма четных элементов массива A: {A.Where(i => i % 2 == 0).Sum()}\n");
+            Console.WriteLine($"Сумма нечетных столбцов массива B: {B.Cast<double>().Where((x, i) => i % 2 == 0).Sum()}\n");
+        }
+        public static int Task2(ref int[,] array, out int sum)
+        {
+            sum = 0;
+            int[] newArray = array.Cast<int>().ToArray();
+            int indexOfMax = Array.IndexOf(newArray, newArray.Max());
+            int indexOfMin = Array.IndexOf(newArray, newArray.Min());
+            for (int i = Math.Min(indexOfMax, indexOfMin) + 1; i < Math.Max(indexOfMax, indexOfMin); i++)
+            {
+                sum += newArray[i];
+            }
+            return sum;
+        }
+    }
+    class Program
+    {
+
+
+        static void Main(string[] args)
+        {
+            /*
+             * Задание 1
+             * Объявить одномерный (5 элементов) массив с именем A и двумерный массив (3 строки, 4 столбца) дробных чисел с именем B. 
+             * Заполнить одномерный массив А числами, введенными с клавиатуры пользователем, а двумерный массив В случайными числами 
+             * с помощью циклов. Вывести на экран значения массивов: массива А в одну строку, массива В — в виде матрицы. Найти в
+             * данных массивах общий максимальный элемент, минимальный элемент, общую сумму всех элементов, общее произведение всех элементов, 
+             * сумму четных элементов массива А, сумму нечетных столбцов массива В.
+             */
+            int[] A = new int[5];
+            double[,] B = new double[3, 4];
+            MyArray.InitArray(ref A);
+            MyArray.InitArray(ref B);
+            Console.Clear();
+            Console.WriteLine("Массив A:");
+            MyArray.PrintArray(A);
+            Console.WriteLine("Массив B:");
+            MyArray.PrintArray(B);
+            MyArray.Task1(A, B);
+            /*
+             * Задание 2
+             * Дан двумерный массив размерностью 5×5, заполненный случайными числами из диапазона от –100 до 100.
+             * Определить сумму элементов массива, расположенных между минимальным и максимальным элементами.
+             */
+            int[,] array = new int[5, 5];
+            MyArray.InitArray(ref array);
+            MyArray.PrintArray(array);
+            MyArray.Task2(ref array, out int sum);
+            Console.WriteLine("Сумма элементов массива, расположенных между минимальным и максимальным элементами: " + sum);
+        }
+    }
+}

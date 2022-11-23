@@ -1,0 +1,237 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text.RegularExpressions;
+
+namespace HW
+{
+    /*
+     * Задание 2
+     * Создайте приложение «Список книг для прочтения» (поля: название, автор, количество страниц).
+     * Приложение должно позволять добавлять книги в список, удалять книги из списка, 
+     * проверять есть ли книга в списке, и т. д. Используйте механизм свойств, 
+     * перегрузки операторов, индексаторов.
+     */
+    class Book
+    {
+        public string Title { get; set; }
+        public string Author { get; set; }
+        public int NumberOfPages { get; set; }
+    }
+
+    class ListOfBooks
+    {
+        private List<Book> listOfBooks;
+        public ListOfBooks()
+        {
+            listOfBooks = new List<Book>();
+        }
+        public static ListOfBooks operator +(ListOfBooks newList, Book book)
+        {
+            newList.listOfBooks.Add(book);
+            return newList;
+        }
+        public static ListOfBooks operator -(ListOfBooks newList, Book book)
+        {
+            newList.listOfBooks.Remove(book);
+            return newList;
+        }
+        public static bool operator ==(ListOfBooks list, int number)
+        {
+            if (list.listOfBooks.Count == number)
+                return true;
+            return false;
+        }
+
+        public static bool operator !=(ListOfBooks list, int number)
+        {
+            if (list.listOfBooks.Count != number)
+                return true;
+            return false;
+        }
+        public static bool operator >(ListOfBooks list, int number)
+        {
+            if (list.listOfBooks.Count > number)
+                return true;
+            return false;
+        }
+        public static bool operator <(ListOfBooks list, int number)
+        {
+            if (list.listOfBooks.Count < number)
+                return true;
+            return false;
+        }
+        public Book this[int index]
+        {
+            get
+            {
+                return listOfBooks[index];
+            }
+            set
+            {
+                listOfBooks[index] = value;
+            }
+        }
+        public void Show()
+        {
+            foreach (var item in listOfBooks)
+            {
+                Console.WriteLine($"Номер: {listOfBooks.IndexOf(item) + 1}");
+                Console.WriteLine($"Название: {item.Title}");
+                Console.WriteLine($"Автор: {item.Author}");
+                Console.WriteLine($"Количество страниц: {item.NumberOfPages}");
+                Console.WriteLine();
+            }
+        }
+        public override bool Equals(object obj)
+        {
+            if (obj is Book && obj != null)
+            {
+                Book temp = (Book)obj;
+                for (int i = 0; i < listOfBooks.Count; i++)
+                {
+                    if (listOfBooks[i].Title == temp.Title &&
+                        listOfBooks[i].Author == temp.Author &&
+                        listOfBooks[i].NumberOfPages == temp.NumberOfPages)
+                    {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
+        public override int GetHashCode()
+        {
+            return listOfBooks.GetHashCode();
+        }
+    }
+
+    class Application
+    {
+        private ListOfBooks listOfBooks;
+        private string title;
+        private string author;
+        private int numberOfPages;
+        public Application()
+        {
+            listOfBooks = new ListOfBooks();
+        }
+        private void ShowList()
+        {
+            Console.Clear();
+            listOfBooks.Show();
+            Console.WriteLine("Нажмите ENTER для продолжения...");
+            Console.ReadLine();
+        }
+        private void AddBook()
+        {
+            Console.Clear();
+            Console.Write("Введите название книги: ");
+            title = Console.ReadLine();
+            Console.Write("Введите автора: ");
+            author = Console.ReadLine();
+            Console.Write("Введите количество страниц: ");
+            numberOfPages = int.Parse(Console.ReadLine());
+            listOfBooks += new Book()
+            {
+                Title = title,
+                Author = author,
+                NumberOfPages = numberOfPages
+            };
+        }
+        private void DeleteBook()
+        {
+            Console.Clear();
+            Console.Write("Введите номер книги, которую хотите удалить: ");
+            int index = int.Parse(Console.ReadLine());
+            listOfBooks -= listOfBooks[index - 1];
+        }
+        private void SearchBook()
+        {
+            Console.Clear();
+            Console.Write("Введите название книги: ");
+            title = Console.ReadLine();
+            Console.Write("Введите автора: ");
+            author = Console.ReadLine();
+            Console.Write("Введите количество страниц: ");
+            numberOfPages = int.Parse(Console.ReadLine());
+
+            bool result = listOfBooks.Equals(new Book()
+            {
+                Title = title,
+                Author = author,
+                NumberOfPages = numberOfPages
+            });
+            if (result == true)
+                Console.WriteLine("Такая книга есть в списке");
+            else
+                Console.WriteLine("Такой книги нет в списке");
+            Console.WriteLine("Нажмите ENTER для продолжения...");
+            Console.ReadLine();
+        }
+        private void SearchNumberOfBooks()
+        {
+            Console.Clear();
+            Console.Write("Введите число: ");
+            int number = int.Parse(Console.ReadLine());
+            if (listOfBooks == number)
+            {
+                Console.WriteLine("Число книг совпадает с введенным числом");
+            }
+            else if (listOfBooks > number)
+            {
+                Console.WriteLine("Число книг в списке больше предпологаемого");
+            }
+            else
+            {
+                Console.WriteLine("Число книг в списке меньше предпологаемого");
+            }
+            Console.WriteLine("Нажмите ENTER для продолжения...");
+            Console.ReadLine();
+        }
+        public void Run()
+        {
+            while (true)
+            {
+                Console.Clear();
+                Console.WriteLine("Меню: ");
+                Console.WriteLine("0 - показать список книг");
+                Console.WriteLine("1 - добавить книгу");
+                Console.WriteLine("2 - удалить книгу");
+                Console.WriteLine("3 - есть ли книга в списке?");
+                Console.WriteLine("4 - проверка количества книг");
+                Console.Write("Введите пункт меню: ");
+                int input = int.Parse(Console.ReadLine());
+                switch (input)
+                {
+                    case 0:
+                        ShowList();
+                        break;
+                    case 1:
+                        AddBook();
+                        break;
+                    case 2:
+                        DeleteBook();
+                        break;
+                    case 3:
+                        SearchBook();
+                        break;
+                    case 4:
+                        SearchNumberOfBooks();
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+    }
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            Application application = new Application();
+            application.Run();
+        }
+    }
+}

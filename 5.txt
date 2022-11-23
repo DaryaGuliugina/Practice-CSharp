@@ -1,0 +1,40 @@
+using System;
+using System.Linq;
+
+namespace HW1
+{
+    class Program
+    {
+        /*
+         * 1. Сжать массив, удалив из него все 0 и, заполнить освободившиеся справа элементы значениями –1
+         */
+        static void task1(ref int[] numbers)
+        {
+            int countZero = numbers.Count(0.Equals);
+            Array.Resize(ref numbers, numbers.Length + countZero);
+            for (int i = numbers.Length - countZero; i < numbers.Length; i++)
+            {
+                numbers[i] = -1;
+            }
+            numbers = numbers.Where(val => val != 0).ToArray();
+        }
+
+        static void Main(string[] args)
+        {
+            int[] array1 = new int[]{ 1,2,3,0,5,6,8,0};
+            Console.WriteLine($"Исходный массив 1:\n {string.Join(" ", array1)}");
+            task1(ref array1);
+            Console.WriteLine($"Отредактированный массив:\n {string.Join(" ", array1)}");
+
+            /*
+            * 2. Преобразовать массив так, чтобы сначала шли все отрицательные элементы, 
+            * а потом положительные (0 считать положительным)
+             */
+
+            int[] array2 = { -1, -5, 3, 0, 5, -10, 9 };
+            Console.WriteLine($"Исходный массив 2:\n{string.Join(" ", array2)}");
+            Array.Sort(array2);
+            Console.WriteLine($"Отсортированный массив:\n{string.Join(" ", array2)}");
+        }
+    }
+}

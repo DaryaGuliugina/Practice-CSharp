@@ -1,0 +1,301 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text.RegularExpressions;
+
+namespace HW
+{
+    /*
+     * Задание 1
+     * Реализовать программу “Строительство дома”
+     * Реализовать:
+     * • Классы
+     * House (Дом), Basement (Фундамент), Walls (Стены), Door (Дверь), Window (Окно), Roof (Крыша); 
+     * Team (Бригада строителей), Worker (Строитель), TeamLeader (Бригадир).
+     * • Интерфейсы
+     * IWorker, IPart.
+     * Все части дома должны реализовать интерфейс IPart (Часть дома), для рабочих и бригадира предоставляется базовый интерфейс IWorker (Рабочий).
+     * Бригада строителей (Team) строит дом (House). Дом состоит из фундамента (Basement), стен (Wall), окон (Window), дверей (Door), крыши (Part).
+     * Согласно проекту, в доме должно быть 1 фундамент, 4 стены, 1 дверь, 4 окна и 1 крыша.
+     * Бригада начинает работу, и строители последовательно “строят” дом, начиная с фундамента. 
+     * Каждый строитель не знает заранее, на чём завершился предыдущий этап строительства, поэтому он “проверяет”, что уже построено и продолжает работу. 
+     * Если в игру вступает бригадир (TeamLeader), он не строит, а формирует отчёт, что уже построено и какая часть работы выполнена.
+     * В конечном итоге на консоль выводится сообщение, что строительство дома завершено 
+     * и отображается “рисунок дома” (вариант отображения выбрать самостоятельно).
+     */
+    interface IPart
+    {
+        bool IsBuild { get; }
+
+        void BuildPart();
+
+        string Show();
+    }
+    class House
+    {
+        private List<IPart> part;
+        public int Length { get; private set; }
+        public House(List<IPart> part)
+        {
+            this.part = part;
+            Length = part.Count;
+        }
+        public IPart this[int index]
+        {
+            get
+            {
+                return part[index];
+            }
+            set
+            {
+                part[index] = value;
+            }
+        }
+        private string house = @"
+                    *
+                 *     *
+              *           *
+            * * * * * * * * *
+            *               *
+            *     * * *     *
+            *     *   *     *
+            *     *   *     *
+            * * * * * * * * *";
+        public void ShowHouse()
+        {
+            Console.WriteLine(house);
+        }
+    }
+    class Basement : IPart
+    {
+        public bool IsBuild { get; private set; }
+
+        public void BuildPart()
+        {
+            Console.WriteLine("\tФундамент построен!");
+            IsBuild = true;
+        }
+
+        public string Show()
+        {
+            return "\tФундамент";
+        }
+    }
+
+    class Walls : IPart
+    {
+        public bool IsBuild { get; private set; }
+        private int count;
+        public Walls(int count)
+        {
+            this.count = count;
+        }
+        public void BuildPart()
+        {
+            for (int i = 0; i < count; i++)
+            {
+                Console.WriteLine($"\tСтена {i + 1} построенна!");
+            }
+            Console.WriteLine("\tСтены построенны!");
+            IsBuild = true;
+        }
+
+        public string Show()
+        {
+            return "\tСтены";
+        }
+    }
+    class Door : IPart
+    {
+        public bool IsBuild { get; private set; }
+
+        public void BuildPart()
+        {
+            Console.WriteLine("\tДверь установлена!");
+            IsBuild = true;
+        }
+
+        public string Show()
+        {
+            return "\tДверь";
+        }
+    }
+
+    class Window : IPart
+    {
+        public bool IsBuild { get; private set; }
+        private int count;
+        public Window(int count)
+        {
+            this.count = count;
+        }
+        public void BuildPart()
+        {
+            for (int i = 0; i < count; i++)
+            {
+                Console.WriteLine($"\tОкно {i + 1} установлено!");
+            }
+            Console.WriteLine("\tОкна установленны!");
+            IsBuild = true;
+        }
+
+        public string Show()
+        {
+            return "\tОкна";
+        }
+    }
+
+    class Roof : IPart
+    {
+        public bool IsBuild { get; private set; }
+
+        public void BuildPart()
+        {
+            Console.WriteLine("\tКрыша установленна!");
+            IsBuild = true;
+        }
+
+        public string Show()
+        {
+            return "\tКрыша";
+        }
+    }
+    interface IWorker
+    {
+        bool IsWorkFinish { get; }
+        void Work(House house);
+    }
+
+    class Worker : IWorker
+    {
+        private string name;
+        public bool IsWorkFinish { get; private set; }
+
+        public Worker(string name)
+        {
+            this.name = name;
+            IsWorkFinish = false;
+        }
+
+        public void Work(House house)
+        {
+            int i = house.Length - 1;
+            while (i >= 0 && house[i].IsBuild == true)
+            {
+                --i;
+            };
+            if (i < 0)
+            {
+                IsWorkFinish = true;
+            }
+            else
+            {
+                Console.WriteLine($"Работает {name}");
+                house[i].BuildPart();
+            }
+        }
+    }
+    class TeamLeader : IWorker
+    {
+        private string name;
+        public bool IsWorkFinish { get; private set; }
+        public TeamLeader(string name)
+        {
+            this.name = name;
+            IsWorkFinish = false;
+        }
+
+        public void Work(House house)
+        {
+            int i = house.Length;
+            int count = 0;
+            Console.WriteLine($"\nБригадир: {name} \nНачало отчета.");
+            Console.WriteLine($"Построено:");
+            while (--i >= 0 && house[i].IsBuild == true)
+            {
+                Console.WriteLine($"{house[i].Show()}");
+                count++;
+            }
+            Console.WriteLine($"Работа завершена на {Math.Round((double)count / house.Length * 100), 0}%");
+            if (i < 0)
+            {
+                IsWorkFinish = true;
+                Console.WriteLine("Строительство дома завершено!");
+            }
+            if (i == house.Length - 1) Console.WriteLine("\tСтроительство началось.");
+            Console.WriteLine("Конец отчета.\n");
+        }
+    }
+
+    class Team
+    {
+        private List<IWorker> workers;
+        public Team(List<IWorker> workers)
+        {
+            this.workers = workers;
+        }
+        public IWorker this[int index]
+        {
+            get
+            {
+                return workers[index];
+            }
+            set
+            {
+                workers[index] = value;
+            }
+        }
+        public void HouseBuilding(House house)
+        {
+            for (int i = 0; i < workers.Count; i++)
+            {
+                if (this[i] is Worker)
+                {
+                    this[i].Work(house);
+                }
+            }
+        }
+        public bool IsWorkFinish(House house)
+        {
+            for (int i = 0; i < workers.Count; i++)
+            {
+                if (this[i] is TeamLeader)
+                {
+                    this[i].Work(house);
+                    return this[i].IsWorkFinish;
+                }
+            }
+            return false;
+        }
+    }
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            List<IPart> parts = new List<IPart>
+            {
+                new Roof(),
+                new Window(4),
+                new Door(),
+                new Walls(4),
+                new Basement()
+            };
+            House build = new House(parts);
+
+            List<IWorker> workers = new List<IWorker>
+            {
+                new Worker("Николай"),
+                new Worker("Евгений"),
+                new Worker("Алексей"),
+                new TeamLeader("Сергей")
+            };
+            Team construction = new Team(workers);
+
+            while (construction.IsWorkFinish(build) != true)
+            {
+                construction.HouseBuilding(build);
+            }
+            build.ShowHouse();
+        }
+    }
+}

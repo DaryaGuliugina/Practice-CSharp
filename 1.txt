@@ -1,0 +1,64 @@
+using System;
+using System.Linq;
+
+namespace HW1
+{
+
+    class Program
+    {
+        /*
+         * Задание 1
+         * Пользователь вводит с клавиатуры число в диапазоне от 1 до 100. Если число кратно 3 
+         * (делится на 3 без остатка) нужно вывести слово Fizz. Если число кратно 5 нужно вывести слово Buzz. 
+         * Если число кратно 3 и 5 нужно вывести Fizz Buzz. Если число не кратно не 3 и 5 нужно вывести само число.
+         * Если пользователь ввел значение не в диапазоне от 1 до 100 требуется вывести сообщение об ошибке.
+         */
+        static void task1()
+        {
+            Console.Write("Введите число: ");
+            string numStr = Console.ReadLine();
+            if (int.TryParse(numStr, out int num) && num >= 1 && num <= 100)
+            {
+                if (num % 3 == 0 && num % 5 == 0)
+                {
+                    Console.WriteLine("Fizz Buzz");
+                }
+                else if (num % 3 == 0)
+                {
+                    Console.WriteLine("Fizz");
+                }
+                else if (num % 5 == 0)
+                {
+                    Console.WriteLine("Buzz");
+                }
+                else
+                {
+                    Console.WriteLine(num);
+                }
+            }
+            else
+            {
+                Console.WriteLine("Ошибка ввода!");
+            }
+        }
+        /*
+         * Задание 2
+         * Пользователь вводит с клавиатуры два числа. Первое число — это значение, второе число процент, 
+         * который необходимо посчитать. Например, мы ввели с клавиатуры 90 и 10. 
+         * Требуется вывести на экран 10 процентов от 90. Результат: 9.
+         */
+        static void task2()
+        {
+            Console.Write("Введите число: ");
+            double value = double.Parse(Console.ReadLine());
+            Console.Write("Введите процент: ");
+            double percent = double.Parse(Console.ReadLine());
+            Console.WriteLine($"Результат: {(value * percent / 100)}");
+        }
+        static void Main(string[] args)
+        {
+            task1();
+            task2();
+        }
+    }
+}

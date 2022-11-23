@@ -1,0 +1,85 @@
+using System;
+using System.Linq;
+
+namespace HW1
+{
+
+    class Program
+    {
+        /*
+         * Задание 1
+         * Пользователь вводит шестизначное число. После чего пользователь вводит номера разрядов для обмена цифр. 
+         * Например, если пользователь ввёл один и шесть — это значит, что надо обменять местами первую и шестую цифры.
+         * Число 723895 должно превратиться в 523897.
+         * Если пользователь ввел не шестизначное число требуется вывести сообщение об ошибке.
+         */
+        static void task1()
+        {
+            Console.Write("Введите шестизначное число: ");
+            string str = Console.ReadLine();
+            if (int.TryParse(str, out int number) && str.Length == 6)
+            {
+                Console.Write("Введите номер разряда первой цифры: ");
+                int number1 = int.Parse(Console.ReadLine()) - 1;
+                Console.Write("Введите номер разряда второй цифры: ");
+                int number2 = int.Parse(Console.ReadLine()) - 1;
+                str = str.Insert(number2, str[number1].ToString());
+                str = str.Insert(number1, str[number2 + 1].ToString());
+                str = str.Remove(number1 + 1, 1);
+                str = str.Remove(number2 + 1, 1);
+                Console.WriteLine($"Результат: {str}");
+            }
+            else
+            {
+                Console.WriteLine("Ошибка ввода!");
+            }
+        }
+        /*
+         * Задание 2
+         * Пользователь вводит с клавиатуры дату. Приложение должно отобразить название сезона и дня недели.
+         * Например, если введено 22.12.2021, приложение должно отобразить Winter Wednesday
+         */
+        static void task2()
+        {
+            Console.Write("Введите день: ");
+            int day = int.Parse(Console.ReadLine());
+            Console.Write("Введите месяц: ");
+            int month = int.Parse(Console.ReadLine());
+            Console.Write("Введите год: ");
+            int year = int.Parse(Console.ReadLine());
+            DateTime time = new DateTime(year, month, day);
+            switch (month)
+            {
+                case 12:
+                case 1:
+                case 2:
+                    Console.Write("Winter");
+                    break;
+                case 3:
+                case 4:
+                case 5:
+                    Console.Write("Spring");
+                    break;
+                case 6:
+                case 7:
+                case 8:
+                    Console.Write("Summer");
+                    break;
+                case 9:
+                case 10:
+                case 11:
+                    Console.Write("Autumn");
+                    break;
+                default:
+                    Console.Write("Ошибка ввода!");
+                    break;
+            }
+            Console.WriteLine($" {time.DayOfWeek}");
+        }
+        static void Main(string[] args)
+        {
+            task1();
+            task2();
+        }
+    }
+}

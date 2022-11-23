@@ -1,0 +1,79 @@
+using System;
+
+namespace Lesson
+{
+    class Program
+    {
+        /*
+         * Задание 1
+         * Пользователь вводит в строку с клавиатуры логическое выражение. 
+         * Например, 3>2 или 7<3. Программа должна посчитать результат 
+         * введенного выражения и дать результат true или false. 
+         * В строке могут быть только целые числа и операторы: <, >, <=, >=, ==, !=. 
+         * Для обработки ошибок ввода используйте механизм исключений.
+         */
+        static void Calculator(string str)
+        {
+            string[] symbols = new string[] { ">=", "<=", ">", "<", "==", "!=" };
+            string symbol = " ";
+            try
+            {
+                for (int i = 0; i < symbols.Length; i++)
+                {
+                    if (str.IndexOf(symbols[i]) != -1)
+                    {
+                        symbol = symbols[i];
+                        string[] arr = str.Split(symbol.ToCharArray());
+                        Console.WriteLine(Operations(symbol, int.Parse(arr[0]), int.Parse(arr[arr.Length - 1])));
+                        break;
+                    }
+                }
+                if (symbol == " ")
+                {
+                    throw new ArgumentException("Неопознанный оператор.");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+        }
+        static bool Operations(string op, int number1, int number2)
+        {
+            if (op == ">=")
+            {
+                return number1 >= number2;
+            }
+            else if (op == "<=")
+            {
+                return number1 <= number2;
+            }
+            else if (op == ">")
+            {
+                return number1 > number2;
+            }
+            else if (op == "<")
+            {
+                return number1 < number2;
+            }
+            else if (op == "==")
+            {
+                return number1 == number2;
+            }
+            else if (op == "!=")
+            {
+                return number1 != number2;
+            }
+            else
+            {
+                throw new ArgumentException("Неопознанный оператор.");
+            }
+        }    
+        static void Main(string[] args)
+        {
+            Console.Write("Введите выражение: ");
+            string str = Console.ReadLine();
+            Calculator(str);
+        }
+    }
+}
